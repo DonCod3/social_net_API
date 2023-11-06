@@ -1,0 +1,95 @@
+const { Thoughts, User } = require('../models');
+// const { ObjectId } = require('mongoose').Types;
+
+module.exports = {
+    async getAllThoughts(req, res) {
+        try {
+            const thoughtData = await Thoughts.find({})
+                .populate('reactions')
+                .populate('thoughts');
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+    },
+    async getThoughtById(req, res) {
+        try {
+            const thoughtData = await Thoughts.findOne({ _id: req.params.id })
+                .populate('reactions')
+                .populate('thoughts');
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+
+        // const thoughtCount = async () => {
+        //     const numberOfThoughts = await Thoughts.aggregate()
+        //         .count('thoughtCount');
+        //     return numberOfThoughts;
+        // }
+    },
+    async createThought(req, res) {
+        try {
+            const thoughtData = await Thoughts.create(req.body);
+            const userData = await User.findOneAndUpdate(
+                { _id: req.body.userId },
+                { $push: { thoughts: thoughtData._id } },
+                { new: true }
+            );
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+    },
+    async updateThought(req, res) {
+        try {
+            const thoughtData = await Thoughts.findOneAndUpdate(
+                { _id: req.params.id },
+                req.body,
+                { new: true }
+            );
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+    },
+    async deleteThought(req, res) {
+        try {
+            const thoughtData = await Thoughts.findOneAndDelete({ _id: req.params.id });
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+    },
+    async addReaction(req, res) {
+        try {
+            const thoughtData = await Thoughts.findOneAndUpdate(
+                { _id: req.params.thoughtId },
+                { $push: { reactions: req.body } },
+                { new: true }
+            );
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+    },
+    async removeReaction(req, res) {
+        try {
+            const thoughtData = await Thoughts.findOneAndUpdate(
+                { _id: req.params.thoughtId },
+                { $pull: { reactions: { reactionId: req.params.reactionId } } },
+                { new: true }
+            );
+            res.json(thoughtData);
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+    }
+}

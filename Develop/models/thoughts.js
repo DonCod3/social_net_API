@@ -1,32 +1,4 @@
 const { Schema, model } = require('mongoose');
-const thoughtsSchema = new Schema(
-    {
-        thoughtText: {
-            type: String,
-            required: true,
-            minlength: 1,
-            maxlength: 280
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            // getter to format the timestamp on query
-            get: (createdAtVal) => dateFormat(createdAtVal)
-        },
-        username: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        // Use ReactionsSchema to validate data for a reply
-        reactions: [ReactionsSchema]
-    },
-    {
-        toJSON: {
-            getters: true
-        }
-    }
-);
 
 //  ReactionSchema
 const ReactionsSchema = new Schema(
@@ -51,6 +23,35 @@ const ReactionsSchema = new Schema(
             default: Date.now,
             get: (createdAtVal) => dateFormat(createdAtVal)
         }
+    },
+    {
+        toJSON: {
+            getters: true
+        }
+    }
+);
+
+const thoughtsSchema = new Schema(
+    {
+        thoughtText: {
+            type: String,
+            required: true,
+            minlength: 1,
+            maxlength: 280
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            // getter to format the timestamp on query
+            get: (createdAtVal) => dateFormat(createdAtVal)
+        },
+        username: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        // Use ReactionsSchema to validate data for a reply
+        reactions: [ReactionsSchema]
     },
     {
         toJSON: {
