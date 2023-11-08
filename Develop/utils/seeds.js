@@ -23,7 +23,7 @@ connection.once('open', async () => {
 
     const users = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 15; i++) {
         let username = faker.internet.userName();
         let Email = faker.internet.email();
 
@@ -35,7 +35,7 @@ connection.once('open', async () => {
     const thoughts = [];
 
     //generate faker thoughts for each user that was seeded
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 11; i++) {
         const thoughtText = faker.lorem.words(Math.round(Math.random() * 10) + 1);
         const username = users[i]
     
@@ -46,7 +46,7 @@ connection.once('open', async () => {
 
     const friends = [];
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 10; i++) {
         const username = faker.internet.userName();
         const email = faker.internet.email();
         const following = users[i]
@@ -57,8 +57,8 @@ connection.once('open', async () => {
     await User.collection.insertMany(friends);
 
     console.table(users);
-    console.table(thoughts);
-    console.table(friends);
+    // console.table(thoughts);
+    // console.table(friends);
     console.info('Seeding complete! 🌱')
     process.exit(0);
 });

@@ -7,6 +7,21 @@ const userCount = async () => {
     return numberOfUsers;
 }
 
+// get friend count aggregate function
+const friendCount = async (getUserById) => 
+    User.aggregate([
+        { $match: { _id: new ObjectId (getUserById) } },
+        {
+            $unwind: '$friends',
+        },
+        {
+            $group: {
+                _id: new ObjectId (getUserById),
+                friendCount: { $sum: 1 },
+            },
+        },
+    ]);
+
 module.exports = {
     // get all users
     async getAllUsers(req, res) {
@@ -26,7 +41,7 @@ module.exports = {
             const userData = await User.findOne({ _id: req.params.id })
                 .populate('thoughts')
                 .populate('friends');
-            res.json(userData);
+            res.json({userData, friendCount});
         } catch (err) {
             console.log(err);
             res.sendStatus(400);
